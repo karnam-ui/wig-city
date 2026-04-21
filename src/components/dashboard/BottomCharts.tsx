@@ -52,7 +52,7 @@ export function BottomCharts() {
             <YAxis type="category" dataKey="type" tick={{ fill: 'oklch(0.60 0.02 140)', fontSize: 9 }} axisLine={false} tickLine={false} width={70} />
             <Tooltip
               contentStyle={{ background: 'oklch(0.16 0.025 140)', border: '1px solid oklch(0.25 0.03 140)', borderRadius: 6, fontSize: 11 }}
-              formatter={(val: number) => [`₹${val}/t`, 'Value']}
+              formatter={(val: any) => [`₹${val}/t`, 'Value']}
             />
             <Bar dataKey="value" fill="oklch(0.72 0.19 145)" radius={[0, 3, 3, 0]} />
           </BarChart>
