@@ -1,26 +1,39 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { KpiStrip } from "@/components/dashboard/KpiStrip";
+import { CityMap } from "@/components/dashboard/CityMap";
+import { TransferFeed } from "@/components/dashboard/TransferFeed";
+import { WardHeatmap } from "@/components/dashboard/WardHeatmap";
+import { BottomCharts } from "@/components/dashboard/BottomCharts";
+import { TruckDrawer } from "@/components/dashboard/TruckDrawer";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: DashboardPage,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function DashboardPage() {
+  const [selectedTruck, setSelectedTruck] = useState<string | null>(null);
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
+    <div className="p-4 space-y-4">
+      <KpiStrip />
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <div className="lg:col-span-3">
+          <CityMap onTruckClick={setSelectedTruck} />
+        </div>
+        <div className="lg:col-span-2 space-y-4">
+          <TransferFeed />
+          <WardHeatmap />
+        </div>
+      </div>
+
+      <BottomCharts />
+
+      <TruckDrawer
+        truckId={selectedTruck}
+        onClose={() => setSelectedTruck(null)}
       />
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }

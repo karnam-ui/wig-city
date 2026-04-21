@@ -9,8 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TransferStationRouteImport } from './routes/transfer-station'
+import { Route as RouteOptimizerRouteImport } from './routes/route-optimizer'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TransferStationRoute = TransferStationRouteImport.update({
+  id: '/transfer-station',
+  path: '/transfer-station',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RouteOptimizerRoute = RouteOptimizerRouteImport.update({
+  id: '/route-optimizer',
+  path: '/route-optimizer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +31,50 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/route-optimizer': typeof RouteOptimizerRoute
+  '/transfer-station': typeof TransferStationRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/route-optimizer': typeof RouteOptimizerRoute
+  '/transfer-station': typeof TransferStationRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/route-optimizer': typeof RouteOptimizerRoute
+  '/transfer-station': typeof TransferStationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/route-optimizer' | '/transfer-station'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/route-optimizer' | '/transfer-station'
+  id: '__root__' | '/' | '/route-optimizer' | '/transfer-station'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RouteOptimizerRoute: typeof RouteOptimizerRoute
+  TransferStationRoute: typeof TransferStationRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/transfer-station': {
+      id: '/transfer-station'
+      path: '/transfer-station'
+      fullPath: '/transfer-station'
+      preLoaderRoute: typeof TransferStationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/route-optimizer': {
+      id: '/route-optimizer'
+      path: '/route-optimizer'
+      fullPath: '/route-optimizer'
+      preLoaderRoute: typeof RouteOptimizerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,7 +87,18 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RouteOptimizerRoute: RouteOptimizerRoute,
+  TransferStationRoute: TransferStationRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
